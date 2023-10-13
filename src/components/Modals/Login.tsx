@@ -1,9 +1,9 @@
-import { useRouter } from 'next/router'
-// import { auth } from "@/firebase/firebase";
 import { authModalState } from '@/atoms/authModalAtom'
 import React, { useEffect, useState } from 'react'
 import { useSetRecoilState } from 'recoil'
-// import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth'
+import { auth } from '@/firebase/firebase'
+import { useRouter } from 'next/router'
 // import { toast } from "react-toastify";
 type LoginProps = {}
 
@@ -13,20 +13,21 @@ const Login: React.FC<LoginProps> = () => {
     setAuthModalState((prev) => ({ ...prev, type }))
   }
   const [inputs, setInputs] = useState({ email: '', password: '' })
-  // const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth);
-  const router = useRouter()
+  const [signInWithEmailAndPassword, user, loading, error] = useSignInWithEmailAndPassword(auth)
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
+  const router = useRouter()
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!inputs.email || !inputs.password) return alert('Please fill all fields')
     try {
-      // const newUser = await signInWithEmailAndPassword(inputs.email, inputs.password);
-      // if (!newUser) return;
+      const newUser = await signInWithEmailAndPassword(inputs.email, inputs.password)
+      if (!newUser) return
       router.push('/')
     } catch (error: any) {
+      alert(error.message)
       // toast.error(error.message, { position: "top-center", autoClose: 3000, theme: "dark" });
     }
   }
@@ -75,8 +76,7 @@ const Login: React.FC<LoginProps> = () => {
         className='w-full text-white focus:ring-blue-300 font-medium rounded-lg
                 text-sm px-5 py-2.5 text-center bg-brand-orange hover:bg-brand-orange-s
             '>
-        Log In
-        {/* {loading ? "Loading..." : "Log In"} */}
+        {loading ? 'Loading...' : 'Log In'}
       </button>
       <button className='flex w-full justify-end' onClick={() => handleClick('forgotPassword')}>
         <a href='#' className='text-sm block text-brand-orange hover:underline w-full text-right'>

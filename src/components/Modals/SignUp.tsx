@@ -1,9 +1,9 @@
-import { authModalState } from '@/atoms/authModalAtom'
-// import { auth, firestore } from "@/firebase/firebase";
-import { useEffect, useState } from 'react'
 import { useSetRecoilState } from 'recoil'
-// import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { authModalState } from '@/atoms/authModalAtom'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
+import { auth, firestore } from '@/firebase/firebase'
 // import { doc, setDoc } from "firebase/firestore";
 // import { toast } from "react-toastify";
 
@@ -16,7 +16,7 @@ const SignUp: React.FC<SignUpProps> = () => {
   }
   const [inputs, setInputs] = useState({ email: '', displayName: '', password: '' })
   const router = useRouter()
-  // const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth);
+  const [createUserWithEmailAndPassword, user, loading, error] = useCreateUserWithEmailAndPassword(auth)
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
@@ -26,8 +26,9 @@ const SignUp: React.FC<SignUpProps> = () => {
     if (!inputs.email || !inputs.password || !inputs.displayName) return alert('Please fill all fields')
     try {
       // toast.loading("Creating your account", { position: "top-center", toastId: "loadingToast" });
-      // const newUser = await createUserWithEmailAndPassword(inputs.email, inputs.password);
-      // if (!newUser) return;
+      const newUser = await createUserWithEmailAndPassword(inputs.email, inputs.password)
+      if (!newUser) return
+      console.log(newUser)
       // const userData = {
       // 	uid: newUser.user.uid,
       // 	email: newUser.user.email,
@@ -42,15 +43,16 @@ const SignUp: React.FC<SignUpProps> = () => {
       // await setDoc(doc(firestore, "users", newUser.user.uid), userData);
       router.push('/')
     } catch (error: any) {
+      console.log(error)
       // toast.error(error.message, { position: "top-center" });
     } finally {
       // toast.dismiss("loadingToast");
     }
   }
 
-  // useEffect(() => {
-  //   if (error) alert(error.message)
-  // }, [error])
+  useEffect(() => {
+    if (error) alert(error.message)
+  }, [error])
 
   return (
     <form className='space-y-6 px-6 pb-4' onSubmit={handleRegister}>
@@ -109,8 +111,7 @@ const SignUp: React.FC<SignUpProps> = () => {
         className='w-full text-white focus:ring-blue-300 font-medium rounded-lg
             text-sm px-5 py-2.5 text-center bg-brand-orange hover:bg-brand-orange-s
         '>
-        Register
-        {/* {loading ? 'Registering...' : 'Register'} */}
+        {loading ? 'Registering...' : 'Register'}
       </button>
 
       <div className='text-sm font-medium text-gray-300'>
