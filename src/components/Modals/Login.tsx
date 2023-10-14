@@ -32,9 +32,10 @@ const Login: React.FC<LoginProps> = () => {
     }
   }
 
-  // useEffect(() => {
-  // 	if (error) toast.error(error.message, { position: "top-center", autoClose: 3000, theme: "dark" });
-  // }, [error]);
+  useEffect(() => {
+    if (error) alert(error.message)
+    // if (error) toast.error(error.message, { position: "top-center", autoClose: 3000, theme: "dark" });
+  }, [error])
   return (
     <form className='space-y-6 px-6 pb-4' onSubmit={handleLogin}>
       <h3 className='text-xl font-medium text-white'>Sign in to LeetClone</h3>

@@ -16,7 +16,6 @@ const AuthPage: React.FC<authPageProps> = () => {
   const [pageLoading, setPageLoading] = useState(true)
   const router = useRouter()
   useEffect(() => {
-    console.log(user, router)
     if (user) {
       router.replace('/')
     }
