@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth'
 import { auth, firestore } from '@/firebase/firebase'
 // import { doc, setDoc } from "firebase/firestore";
-// import { toast } from "react-toastify";
+import { toast } from 'react-toastify'
 
 type SignUpProps = {}
 
@@ -25,7 +25,7 @@ const SignUp: React.FC<SignUpProps> = () => {
     e.preventDefault()
     if (!inputs.email || !inputs.password || !inputs.displayName) return alert('Please fill all fields')
     try {
-      // toast.loading("Creating your account", { position: "top-center", toastId: "loadingToast" });
+      toast.loading('Creating your account', { position: 'top-center', toastId: 'loadingToast' })
       const newUser = await createUserWithEmailAndPassword(inputs.email, inputs.password)
       if (!newUser) return
       console.log(newUser)
@@ -43,15 +43,14 @@ const SignUp: React.FC<SignUpProps> = () => {
       // await setDoc(doc(firestore, "users", newUser.user.uid), userData);
       router.push('/')
     } catch (error: any) {
-      console.log(error)
-      // toast.error(error.message, { position: "top-center" });
+      toast.error(error.message, { position: 'top-center' })
     } finally {
-      // toast.dismiss("loadingToast");
+      toast.dismiss('loadingToast')
     }
   }
 
   useEffect(() => {
-    if (error) alert(error.message)
+    if (error) toast.error(error.message, { position: 'top-center' })
   }, [error])
 
   return (

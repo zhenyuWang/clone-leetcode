@@ -3,7 +3,7 @@ import { auth } from '@/firebase/firebase'
 import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth'
 import { authModalState } from '@/atoms/authModalAtom'
 import { useSetRecoilState } from 'recoil'
-// import { toast } from "react-toastify";
+import { toast } from 'react-toastify'
 type ResetPasswordProps = {}
 
 const ResetPassword: React.FC<ResetPasswordProps> = () => {
@@ -13,15 +13,16 @@ const ResetPassword: React.FC<ResetPasswordProps> = () => {
     e.preventDefault()
     const success = await sendPasswordResetEmail(email)
     if (success) {
-      alert('Password reset email sent. Note: It may be treated as spam.')
-      // toast.success("Password reset email sent", { position: "top-center", autoClose: 3000, theme: "dark" });
+      toast.success('Password reset email sent.\nNote: It may be treated as spam.', {
+        position: 'top-center',
+        autoClose: 3000,
+        theme: 'dark',
+      })
     }
   }
 
   useEffect(() => {
-    if (error) {
-      alert(error.message)
-    }
+    if (error) toast.error(error.message, { position: 'top-center' })
   }, [error])
 
   const setAuthModalState = useSetRecoilState(authModalState)
