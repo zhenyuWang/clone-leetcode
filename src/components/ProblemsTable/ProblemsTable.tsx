@@ -19,6 +19,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ setLoadingProblems }) => 
     videoId: "",
   })
   const problems = useGetProblems(setLoadingProblems)
+  const solvedProblems = useGetSolvedProblems()
   const closeModal = () => {
     setYoutubePlayer({ isOpen: false, videoId: "" })
   }
@@ -42,32 +43,32 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ setLoadingProblems }) => 
               ? "text-dark-yellow"
               : "text-dark-pink"
           return (
-            <div className={`${idx % 2 == 1 ? "flex bg-dark-layer-1" : "flex"}`} key={problem.id}>
-              <div className="px-2 py-4 w-[10%] font-medium whitespace-nowrap text-dark-green-s">
-                <BsCheckCircle fontSize={"18"} width="18" />
+            <div className={`${idx % 2 == 1 ? 'flex bg-dark-layer-1' : 'flex'}`} key={problem.id}>
+              <div className='px-2 py-4 w-[10%] font-medium whitespace-nowrap text-dark-green-s'>
+                {solvedProblems.includes(problem.id) && <BsCheckCircle fontSize={'18'} width='18' />}
               </div>
-              <div className="px-1 py-4 w-[38%]">
+              <div className='px-1 py-4 w-[38%]'>
                 {problem.link ? (
-                  <Link href={problem.link} className="hover:text-blue-600 cursor-pointer" target="_blank">
+                  <Link href={problem.link} className='hover:text-blue-600 cursor-pointer' target='_blank'>
                     {problem.title}
                   </Link>
                 ) : (
-                  <Link className="hover:text-blue-600 cursor-pointer" href={`/problems/${problem.id}`}>
+                  <Link className='hover:text-blue-600 cursor-pointer' href={`/problems/${problem.id}`}>
                     {problem.title}
                   </Link>
                 )}
               </div>
               <div className={`px-1 py-4 w-[12%] ${difficultyColor}`}>{problem.difficulty}</div>
-              <div className={"px-1 py-4 w-[23%]"}>{problem.category}</div>
-              <div className={"px-1 py-4 w-[17%]"}>
+              <div className={'px-1 py-4 w-[23%]'}>{problem.category}</div>
+              <div className={'px-1 py-4 w-[17%]'}>
                 {problem.videoId ? (
                   <AiFillYoutube
-                    fontSize={"28"}
-                    className="cursor-pointer hover:text-red-600"
+                    fontSize={'28'}
+                    className='cursor-pointer hover:text-red-600'
                     onClick={() => setYoutubePlayer({ isOpen: true, videoId: problem.videoId as string })}
                   />
                 ) : (
-                  <p className="text-gray-400">Coming soon</p>
+                  <p className='text-gray-400'>Coming soon</p>
                 )}
               </div>
             </div>
@@ -112,4 +113,25 @@ function useGetProblems(setLoadingProblems: React.Dispatch<React.SetStateAction<
     getProblems()
   }, [setLoadingProblems])
   return problems
+}
+
+function useGetSolvedProblems() {
+  const [solvedProblems, setSolvedProblems] = useState<string[]>([])
+  const [user] = useAuthState(auth)
+
+  useEffect(() => {
+    const getSolvedProblems = async () => {
+      const userRef = doc(firestore, 'users', user!.uid)
+      const userDoc = await getDoc(userRef)
+
+      if (userDoc.exists()) {
+        setSolvedProblems(userDoc.data().solvedProblems)
+      }
+    }
+
+    if (user) getSolvedProblems()
+    if (!user) setSolvedProblems([])
+  }, [user])
+
+  return solvedProblems
 }
