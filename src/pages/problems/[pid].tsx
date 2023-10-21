@@ -1,13 +1,17 @@
 import React from "react"
-import TopBar from "@/components/TopBar/TopBar"
-import Workspace from "@/components/Workspace/Workspace"
-import { Problem, problems } from "@/utils/problems"
+import useHasMounted from '@/hooks/useHasMounted'
+import TopBar from '@/components/TopBar/TopBar'
+import Workspace from '@/components/Workspace/Workspace'
+import { Problem, problems } from '@/utils/problems'
 
 type ProblemPageProps = {
   problem: Problem
 }
 
 const ProblemPage: React.FC<ProblemPageProps> = ({ problem }) => {
+  const hasMounted = useHasMounted()
+
+  if (!hasMounted) return null
   return (
     <>
       <TopBar problemPage />
