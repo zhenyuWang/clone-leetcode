@@ -2,7 +2,6 @@ import { auth } from '@/firebase/firebase'
 import Link from 'next/link'
 import React from 'react'
 import { useAuthState } from 'react-firebase-hooks/auth'
-// import Logout from '../Buttons/Logout'
 import { useSetRecoilState } from 'recoil'
 import { authModalState } from '@/atoms/authModalAtom'
 import Image from 'next/image'
@@ -10,9 +9,9 @@ import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { BsList } from 'react-icons/bs'
 import Logout from '../Buttons/Logout'
 import Timer from '../Timer/Timer'
-// import { useRouter } from 'next/router'
-// import { problems } from '@/utils/problems'
-// import { Problem } from '@/utils/types/problem'
+import { useRouter } from 'next/router'
+import { problems } from '@/utils/problems'
+import { Problem } from '@/utils/types/problem'
 
 type TopBarProps = {
   problemPage?: boolean
@@ -21,24 +20,25 @@ type TopBarProps = {
 const TopBar: React.FC<TopBarProps> = ({ problemPage }) => {
   const [user] = useAuthState(auth)
   const setAuthModalState = useSetRecoilState(authModalState)
-  //   const router = useRouter()
+  const problemsKeys = Object.keys(problems)
+  const router = useRouter()
 
-  //   const handleProblemChange = (isForward: boolean) => {
-  //     const { order } = problems[router.query.pid as string] as Problem
-  //     const direction = isForward ? 1 : -1
-  //     const nextProblemOrder = order + direction
-  //     const nextProblemKey = Object.keys(problems).find((key) => problems[key].order === nextProblemOrder)
+  const handleProblemChange = (isForward: boolean) => {
+    const { order } = problems[router.query.pid as string] as Problem
+    const direction = isForward ? 1 : -1
+    const nextProblemOrder = order + direction
+    const nextProblemKey = problemsKeys.find((key) => problems[key].order === nextProblemOrder)
 
-  //     if (isForward && !nextProblemKey) {
-  //       const firstProblemKey = Object.keys(problems).find((key) => problems[key].order === 1)
-  //       router.push(`/problems/${firstProblemKey}`)
-  //     } else if (!isForward && !nextProblemKey) {
-  //       const lastProblemKey = Object.keys(problems).find((key) => problems[key].order === Object.keys(problems).length)
-  //       router.push(`/problems/${lastProblemKey}`)
-  //     } else {
-  //       router.push(`/problems/${nextProblemKey}`)
-  //     }
-  //   }
+    if (isForward && !nextProblemKey) {
+      const firstProblemKey = problemsKeys.find((key) => problems[key].order === 1)
+      router.push(`/problems/${firstProblemKey}`)
+    } else if (!isForward && !nextProblemKey) {
+      const lastProblemKey = problemsKeys.find((key) => problems[key].order === problemsKeys.length)
+      router.push(`/problems/${lastProblemKey}`)
+    } else {
+      router.push(`/problems/${nextProblemKey}`)
+    }
+  }
 
   return (
     <nav className='relative flex h-[50px] w-full shrink-0 items-center px-5 bg-dark-layer-1 text-dark-gray-7'>
@@ -51,8 +51,7 @@ const TopBar: React.FC<TopBarProps> = ({ problemPage }) => {
           <div className='flex items-center gap-4 flex-1 justify-center'>
             <div
               className='flex items-center justify-center rounded bg-dark-fill-3 hover:bg-dark-fill-2 h-8 w-8 cursor-pointer'
-              //   onClick={() => handleProblemChange(false)}
-            >
+              onClick={() => handleProblemChange(false)}>
               <FaChevronLeft />
             </div>
             <Link
@@ -65,8 +64,7 @@ const TopBar: React.FC<TopBarProps> = ({ problemPage }) => {
             </Link>
             <div
               className='flex items-center justify-center rounded bg-dark-fill-3 hover:bg-dark-fill-2 h-8 w-8 cursor-pointer'
-              //   onClick={() => handleProblemChange(true)}
-            >
+              onClick={() => handleProblemChange(true)}>
               <FaChevronRight />
             </div>
           </div>
