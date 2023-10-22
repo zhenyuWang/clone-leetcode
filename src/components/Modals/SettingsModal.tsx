@@ -1,32 +1,28 @@
-import { BsCheckLg, BsChevronDown } from 'react-icons/bs'
+import useLocalStorage from '@/hooks/useLocalStorage'
 import { IoClose } from 'react-icons/io5'
-// import { ISettings } from "../Workspace/Playground/Playground";
-// import useLocalStorage from "@/hooks/useLocalStorage";
+import { ISettings } from '../Workspace/Playground/Playground'
+import { BsCheckLg, BsChevronDown } from 'react-icons/bs'
 
 const EDITOR_FONT_SIZES = ['12px', '13px', '14px', '15px', '16px', '17px', '18px']
 
 interface SettingsModalProps {
-  // settings: ISettings;
-  // setSettings: React.Dispatch<React.SetStateAction<ISettings>>;
+  settings: ISettings
+  setSettings: React.Dispatch<React.SetStateAction<ISettings>>
 }
 
-// const SettingsModal: React.FC<SettingsModalProps> = ({ setSettings, settings }) => {
-const SettingsModal: React.FC<SettingsModalProps> = () => {
-  // const [fontSize, setFontSize] = useLocalStorage("lcc-fontSize", "16px");
+const SettingsModal: React.FC<SettingsModalProps> = ({ settings, setSettings }) => {
+  const [fontSize, setFontSize] = useLocalStorage('lcc-fontSize', '16px')
 
   const handleClickDropdown = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation()
-    // setSettings({ ...settings, dropdownIsOpen: !settings.dropdownIsOpen });
+    setSettings({ ...settings, dropdownIsOpen: !settings.dropdownIsOpen })
   }
   return (
     <div className='text-white z-40'>
       <div aria-modal='true' role='dialog' className='fixed inset-0 overflow-y-auto z-modal'>
         <div className='flex min-h-screen items-center justify-center px-4'>
           {/* overlay */}
-          <div
-            className='opacity-100'
-            // onClick={() => setSettings({ ...settings, settingsModalIsOpen: false })}
-          >
+          <div className='opacity-100' onClick={() => setSettings({ ...settings, settingsModalIsOpen: false })}>
             <div className='fixed inset-0 bg-gray-8 opacity-60'></div>
           </div>
 
@@ -36,8 +32,7 @@ const SettingsModal: React.FC<SettingsModalProps> = () => {
               Settings
               <button
                 className='ml-auto cursor-pointer rounded transition-all'
-                // onClick={() => setSettings({ ...settings, settingsModalIsOpen: false })}
-              >
+                onClick={() => setSettings({ ...settings, settingsModalIsOpen: false })}>
                 <IoClose />
               </button>
             </div>
@@ -54,29 +49,28 @@ const SettingsModal: React.FC<SettingsModalProps> = () => {
                       onClick={handleClickDropdown}
                       className='flex cursor-pointer items-center rounded px-3 py-1.5 text-left focus:outline-none whitespace-nowrap bg bg-dark-fill-3 hover:bg-dark-fill-2 active:bg-dark-fill-3 w-full justify-between'
                       type='button'>
-                      {/* {fontSize} */}
+                      {fontSize}
                       <BsChevronDown />
                     </button>
                     {/* Show dropdown for fontsizes */}
-                    {/* {settings.dropdownIsOpen && ( */}
-                    {true && (
+                    {settings.dropdownIsOpen && (
                       <ul
                         className='absolute mt-1 max-h-56 overflow-auto rounded-lg p-2 z-50 focus:outline-none shadow-lg   w-full bg-dark-layer-1'
                         style={{
                           filter:
                             'drop-shadow(rgba(0, 0, 0, 0.04) 0px 1px 3px) drop-shadow(rgba(0, 0, 0, 0.12) 0px 6px 16px)',
                         }}>
-                        {/* {EDITOR_FONT_SIZES.map((fontSize, idx) => (
-													<SettingsListItem
-														key={idx}
-														fontSize={fontSize}
-														selectedOption={settings.fontSize}
-														handleFontSizeChange={(fontSize) => {
-															setFontSize(fontSize);
-															setSettings({ ...settings, fontSize: fontSize });
-														}}
-													/>
-												))} */}
+                        {EDITOR_FONT_SIZES.map((fontSize, idx) => (
+                          <SettingsListItem
+                            key={idx}
+                            fontSize={fontSize}
+                            selectedOption={settings.fontSize}
+                            handleFontSizeChange={(fontSize) => {
+                              setFontSize(fontSize)
+                              setSettings({ ...settings, fontSize: fontSize })
+                            }}
+                          />
+                        ))}
                       </ul>
                     )}
                   </div>
